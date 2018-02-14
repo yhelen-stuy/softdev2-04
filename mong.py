@@ -1,30 +1,32 @@
 from pymongo import MongoClient
 
-
 c = MongoClient('lisa.stuy.edu')
-
 
 db = c['test']
 coll = db['restaurants']
 
-
-
+# Returns a cursor with all restaurants in borough inputted
 def find_borough(borough):
-    for rest in coll.find({"borough": borough}):
-        print rest
+    return coll.find({"borough": borough})
 
+# Returns a cursor with all restaurants in zipcode inputted
+# Zipcode can be either string or int
 def find_zip(zipp):
-    for rest in coll.find({"address.zipcode": str(zipp)}):
-        print rest
+    return coll.find({"address.zipcode": str(zipp)})
 
+# Returns a cursor with all restaurants in zipcode inputted and grade specified
 def find_zip_and_grade(zipp, grade):
-    for rest in coll.find({"address.zipcode": str(zipp), "grades.grade": grade}):
-        print rest
+    return coll.find({"address.zipcode": str(zipp), "grades.grade": grade})
 
+# Returns a cursor with all restaurants in zipcode inputted and a score lower than the one inputted
 def find_zip_and_score_below(zipp, score):
-    for rest in coll.find("stuff"):
-        print rest
+    return coll.find({"address.zipcode": str(zipp), "grades.score": {"$lt": score} })
 
-#find_borough("Queens")
-find_zip(11365)
-find_zip_and_grade(11365, "A")
+def print_cursor(cursor):
+    for item in cursor:
+        print item
+
+print_cursor(find_borough("Manhattan"))
+print_cursor(find_zip(10282))
+print_cursor(find_zip_and_grade(10282, "A"))
+print_cursor(find_zip_and_score_below(10282, 20))
