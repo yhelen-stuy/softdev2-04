@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-
+import random
 c = MongoClient('lisa.stuy.edu')
 
 db = c['test']
@@ -22,6 +22,12 @@ def find_zip_and_grade(zipp, grade):
 def find_zip_and_score_below(zipp, score):
     return coll.find({"address.zipcode": str(zipp), "grades.score": {"$lt": score} })
 
+# Returns a random restaurant with a zipcode 10 less than the zipcode inputted
+def find_fun(zipp):
+    rest =  coll.find({"address.zipcode": str(zipp - 10)})
+    return rest[random.randint(0, rest.count() - 1)]
+
+# Prints the cursor
 def print_cursor(cursor):
     for item in cursor:
         print item
@@ -30,3 +36,4 @@ print_cursor(find_borough("Manhattan"))
 print_cursor(find_zip(10282))
 print_cursor(find_zip_and_grade(10282, "A"))
 print_cursor(find_zip_and_score_below(10282, 20))
+print find_fun(11372)
